@@ -19,7 +19,7 @@ from utils.torch_utils import select_device, load_classifier, time_synchronized
 # source, weights, view_img, save_txt, imgsz = opt.source, opt.weights, opt.view_img, opt.save_txt, opt.img_size
 weights = 'drone.pt'
 imgsz=640
-conf_thres=0.25
+# conf_thres=0.7
 iou_thres=0.45
 # save_img = not opt.nosave and not source.endswith('.txt')  # save inference images
 save_img=False
@@ -56,7 +56,7 @@ if device != 'cpu':
     model(torch.zeros(1, 3, imgsz, imgsz).to(device).type_as(next(model.parameters())))  # run once
 t0 = time.time()
 center_list=[]
-def detect(im0):
+def detect(im0,conf_thres):
     # Padded resize
     img = letterbox(im0, imgsz, stride=stride)[0]
 

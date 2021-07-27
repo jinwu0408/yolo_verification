@@ -20,52 +20,67 @@ from calculate_target_pos import calculate_target_pos
 from sent_drone import sent_drone
 from collect_data import collect_data
 from update_conf_score import update_conf_score
+from API.clear_db import clear_db
+from API.upload_img import upload_img
+from API.update_conf import update_conf
+from API.get_size_with_id import get_size_with_id
 
-
+#source ~/code/parrot-groundsdk/./products/olympe/linux/env/shell
 if __name__ == "__main__":
     print('Starting....\n')
 
-    conf_cutoff = 0.5
+    conf_cutoff = 0.5 #for senting the drone
+    conf_thres=0.2 #for yolo
     webcam_id = 0
-
+    primary_drone_id = 1 #primary_drone_id for the databasse
+    secondary_drone_id = 2 #secondary_drone_id for the databasse
+    clear_db(primary_drone_id) #clear the database
+    clear_db(secondary_drone_id)
     print('Starting the Webcam')
     cap = cv2.VideoCapture(webcam_id)
-    cont = True
+    # cont = True
     while(True):
         ret, frame = cap.read()
-
-        xyxy_list,label_list,conf_list = detect(frame)
+        #Run yolo detection
+        xyxy_list,label_list,conf_list = detect(frame,conf_thres)
         num_detect = len(label_list)
+        print('detected: {} with {}'.format(label_list,conf_list))
+        ###############Check if the confidence score is less than conf_cutoff####################
         for i in range(num_detect):
-            xyxy = xyxy_list[i]
-            label = label_list[i]
-            conf = conf_list[i]
+            xyxy = xyxy_list[i]#ndarray
+            label = label_list[i]#str
+            conf = conf_list[i]#float
+            ###############################Need to sent a drone############################3
             if conf<conf_cutoff:
-                # frame_cp = frame.copy()
-                # plot_one_box(xyxy, frame_cp, label=label+' '+ "{:.2f}".format(conf) + '?????', color=colors(0, True))
-                # print
-                # cv2.imshow('frame2',frame_cp)
-
+                print('Current database size: {}'.format(get_size_with_id(primary_drone_id)))
+                save_path = 'frame_dir|primary|tmp_frame.jpg'
+                cv2.imwrite(save_path.replace('|','/'), frame)
+                upload_img(save_path,
+                            primary_drone_id,
+                            xyxy[0],
+                            xyxy[1],
+                            xyxy[2],
+                            xyxy[3],
+                            label,
+                            conf)
+                print("Database size after upload: {}".format(get_size_with_id(primary_drone_id)))
                 #sent_drone
                 print("Sending the Drone")
                 # time.sleep(1)
                 #collect_data
-                print('Collecting Data')
+                # print('Collecting Data')
                 # cv2.destroyAllWindows()
-                collected_img = collect_data()
+                collected_img = collect_data(secondary_drone_id)
                 #update_conf_score
-                new_conf = update_conf_score(collected_img)
-                if new_conf != 0:
+                new_conf = update_conf_score(save_path,collected_img,conf_thres)
+                if new_conf != 0 and new_conf>conf:
                     plot_one_box(xyxy, frame, label=label+' '+ "{:.2f}".format(new_conf), color=colors(0, True))
+                    print('Old Conf:{}  New Conf:{}'.format(conf,new_conf))
                     print('New Confidence Score Been Updated')
                 else:
                     plot_one_box(xyxy, frame, label=label+' '+ "{:.2f}".format(conf), color=colors(0, True))
                     print('Not be able to update the confidence')
-                # key_input = input('Press Enter to continue, quit to QUIT')
-                # print(key_input)
-                # if key_input == 'quit':
-                #     cont = False
-                #     break
+
             else:
                 plot_one_box(xyxy, frame, label=label+' '+ "{:.2f}".format(conf), color=colors(0, True))
 
