@@ -26,3 +26,26 @@ This project is intended to send a drone to verify/enhance the yolov5 object det
     - it will all keyboard_ctrl and press 0 to take photos from the drone.
   - No
     - It will continue running.
+
+##KeyboardCtrl
+QWERTY_CTRL_KEYS = {
+    Ctrl.QUIT: Key.esc,
+    Ctrl.TAKEOFF: "t",
+    Ctrl.LANDING: "l",
+    Ctrl.MOVE_LEFT: "a",
+    Ctrl.MOVE_RIGHT: "d",
+    Ctrl.MOVE_FORWARD: "w",
+    Ctrl.MOVE_BACKWARD: "s",
+    Ctrl.MOVE_UP: Key.up,
+    Ctrl.MOVE_DOWN: Key.down,
+    Ctrl.TURN_LEFT: Key.left,
+    Ctrl.TURN_RIGHT: Key.right,
+    Ctrl.BREAK_LOOP: Key.enter,
+    Ctrl.WAIT: Key.space,
+    Ctrl.CHECK: "c",
+    Ctrl.Streaming_START:"1",
+    Ctrl.Streaming_STOP:"2",
+    Ctrl.RECORDING_START:"3",
+    Ctrl.RECORDING_STOP:"4",
+    Ctrl.TAKE_PHOTO:"5"
+}
