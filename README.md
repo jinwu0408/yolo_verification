@@ -27,7 +27,7 @@ This project is intended to send a drone to verify/enhance the yolov5 object det
   - No
     - It will continue running.
 
-##KeyboardCtrl
+## KeyboardCtrl
     Ctrl.QUIT: Key.esc,\
     Ctrl.TAKEOFF: "t",\
     Ctrl.LANDING: "l",\
