@@ -17,7 +17,7 @@ from utils.torch_utils import select_device, load_classifier, time_synchronized
 
 
 # source, weights, view_img, save_txt, imgsz = opt.source, opt.weights, opt.view_img, opt.save_txt, opt.img_size
-weights = 'drone.pt'
+weights = 'can.pt'
 imgsz=640
 # conf_thres=0.7
 iou_thres=0.45

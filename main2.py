@@ -20,10 +20,10 @@ from calculate_target_pos import calculate_target_pos
 from sent_drone import sent_drone
 from collect_data import collect_data
 from update_conf_score import update_conf_score
-from API.clear_db import clear_db
-from API.upload_img import upload_img
-from API.update_conf import update_conf
-from API.get_size_with_id import get_size_with_id
+from API2.clear_db import clear_db
+from API2.upload_img import upload_img
+from API2.update_conf import update_conf
+from API2.get_size_with_id import get_size_with_id
 
 #source ~/code/parrot-groundsdk/./products/olympe/linux/env/shell
 if __name__ == "__main__":
@@ -67,19 +67,19 @@ if __name__ == "__main__":
                 #sent_drone
                 print("Sending the Drone")
                 # time.sleep(1)
-                #collect_data
+                # collect_data
                 # print('Collecting Data')
                 # cv2.destroyAllWindows()
-                collected_img = collect_data(secondary_drone_id)
+                collect_data(secondary_drone_id)
                 #update_conf_score
-                new_conf = update_conf_score(save_path,collected_img,conf_thres)
+                new_conf,new_label = update_conf_score(save_path,conf_thres)
                 if new_conf != 0 and new_conf>conf:
-                    plot_one_box(xyxy, frame, label=label+' '+ "{:.2f}".format(new_conf), color=colors(0, True))
+                    plot_one_box(xyxy, frame, label=new_label+' '+ "{:.2f}".format(new_conf), color=colors(0, True))
                     print('Old Conf:{}  New Conf:{}'.format(conf,new_conf))
                     print('New Confidence Score Been Updated')
                 else:
-                    plot_one_box(xyxy, frame, label=label+' '+ "{:.2f}".format(conf), color=colors(0, True))
-                    print('Not be able to update the confidence')
+                    # plot_one_box(xyxy, frame, label=label+' '+ "{:.2f}".format(conf), color=colors(0, True))
+                    print('False Detection')
 
             else:
                 plot_one_box(xyxy, frame, label=label+' '+ "{:.2f}".format(conf), color=colors(0, True))

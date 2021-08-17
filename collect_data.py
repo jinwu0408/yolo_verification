@@ -23,22 +23,28 @@ from olympe.messages.ardrone3.GPSSettingsState import GPSFixStateChanged
 from detect_drone import detect_drone
 from keyboard_ctrl import Ctrl, KeyboardCtrl
 import os
-
-from API.callget_drone_photo import setup_photo_burst_mode,take_photo_burst
+from API2.add_task import add_task
+from API2.callget_drone_photo import setup_photo_burst_mode,take_photo_burst
 
 #source ~/code/parrot-groundsdk/./products/olympe/linux/env/shell
 
 def collect_data(secondary_drone_id):
-    ret_list = []
-    cap = cv2.VideoCapture(0)
-    save_dir = 'frame_dir/secondary/'
-    ret_list = []
-    dirs = os.listdir( save_dir )
+    add_task(secondary_drone_id, TakeOff)
+    add_task(secondary_drone_id, 'sleep', '10')
+    add_task(secondary_drone_id, 'takepicture')
+    add_task(secondary_drone_id, 'Landing')
 
-    for img in dirs:
-       image = cv2.imread(save_dir+img)
-       ret_list.append(image)
-    return ret_list
+    return 'Fininshing Collecting the images'
+    # ret_list = []
+    # cap = cv2.VideoCapture(0)
+    # save_dir = 'frame_dir/secondary/'
+    # ret_list = []
+    # dirs = os.listdir( save_dir )
+    #
+    # for img in dirs:
+    #    image = cv2.imread(save_dir+img)
+    #    ret_list.append(image)
+    # return ret_list
 
 
 

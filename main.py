@@ -25,9 +25,9 @@ from update_conf_score import update_conf_score
 if __name__ == "__main__":
     print('Starting....\n')
     #connect to the drone
-    object = 'drone'
+    object = 'Good'
     source='0'
-    drone_weights = 'drone.pt'
+    drone_weights = 'valve_2.pt'
     object_weights = 'valve'
     imgsz=640
     conf_thres=0.25

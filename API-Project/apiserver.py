@@ -65,11 +65,21 @@ class update_confidence_score(Resource):
         x = confidence_score.split("$")
         strPhoto_path=x[0]
         realscore=x[1]
+        new_label = x[2]
         print (realscore)
         print (strPhoto_path)
         strPhoto_path=strPhoto_path.replace("|","/")
-        query = conn.execute("update photos set confidence_score="+ realscore +"  where photo_path='" + str(strPhoto_path) + "'" )
+        query = conn.execute("update photos set confidence_score="+ realscore +", label="+new_label+"  where photo_path='" + str(strPhoto_path) + "'" )
         return "updated"
+
+class add_task(Resource):
+   def get(self,command):
+       x = command.split("$")
+       drone_id=x[0]
+       taskname=x[1]
+       task=x[2]
+       conn = db_connect.connect()
+       query = conn.execute("INSERT into Task (Droneid, Taskename, Task) VALUES({},{},{})".format(drone_id, taskname, task))
 
 
 api.add_resource(get_Drone_Task, '/task/<drone_id>')
@@ -77,6 +87,7 @@ api.add_resource(set_Drone_Photo, '/set_Drone_Photo/<Photo_path>')
 api.add_resource(get_Drone_Photo, '/get_Drone_Photo/<drone_id>')
 api.add_resource(update_confidence_score, '/update_confidence_score/<confidence_score>')
 api.add_resource(delete_data_with_id, '/delete/<drone_id>')
+api.add_resource(add_task,'/add_task/<command>')
 
 
 if __name__ == '__main__':
