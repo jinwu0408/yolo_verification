@@ -6,13 +6,12 @@ This project is intended to send a drone to verify/enhance the yolov5 object det
 
 ## Project Breakdown
 - Train yolov5 for the custom object.(yolo_model/train.py)
+- Drag the trained weight
 - Run yolov5 on webcam. (main2.py)
   - If confidence above threshold:
     - Continue(main2.py)
   - If confidence below threshold:
-    - Figure out where to send the drone to **(Need to Do)**
     - Connect to the drone. (collect_data.py)
-    - Sent the drone **(Need to do)**
     - Collect save footage from the drone. (collect_data.py)
     - Save the footages and disconnect the drone.
  (collect_data.py)

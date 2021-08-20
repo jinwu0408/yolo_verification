@@ -17,7 +17,7 @@ from utils.torch_utils import select_device, load_classifier, time_synchronized
 
 
 # source, weights, view_img, save_txt, imgsz = opt.source, opt.weights, opt.view_img, opt.save_txt, opt.img_size
-weights = 'can.pt'
+weights = 'valve_2.pt'
 imgsz=640
 # conf_thres=0.7
 iou_thres=0.45
@@ -57,6 +57,20 @@ if device != 'cpu':
 t0 = time.time()
 center_list=[]
 def detect(im0,conf_thres):
+
+    '''
+    Returns the detection using the weights specified above.
+
+    Parameters:
+        im0 (numpy.ndarray): The input images.
+        conf_thres(float): The confidence cutoff for yolo to determine detections.
+
+    Returns:
+        xyxy_list (list): The center list.
+        label_list (list): The label list.
+        conf_list (list): The confidence list.
+    '''
+
     # Padded resize
     img = letterbox(im0, imgsz, stride=stride)[0]
 

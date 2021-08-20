@@ -16,8 +16,6 @@ from utils.plots import colors, plot_one_box
 from utils.torch_utils import select_device, load_classifier, time_synchronized
 
 from detect import detect
-from calculate_target_pos import calculate_target_pos
-from sent_drone import sent_drone
 from collect_data import collect_data
 from update_conf_score import update_conf_score
 from API2.clear_db import clear_db
@@ -29,8 +27,8 @@ from API2.get_size_with_id import get_size_with_id
 if __name__ == "__main__":
     print('Starting....\n')
 
-    conf_cutoff = 0.5 #for senting the drone
-    conf_thres=0.2 #for yolo
+    conf_cutoff = 0.2 #for senting the drone
+    conf_thres=0.1 #for yolo
     webcam_id = 0
     primary_drone_id = 1 #primary_drone_id for the databasse
     secondary_drone_id = 2 #secondary_drone_id for the databasse
@@ -66,30 +64,25 @@ if __name__ == "__main__":
                 print("Database size after upload: {}".format(get_size_with_id(primary_drone_id)))
                 #sent_drone
                 print("Sending the Drone")
-                # time.sleep(1)
-                # collect_data
-                # print('Collecting Data')
-                # cv2.destroyAllWindows()
                 collect_data(secondary_drone_id)
                 #update_conf_score
                 new_conf,new_label = update_conf_score(save_path,conf_thres)
+
                 if new_conf != 0 and new_conf>conf:
                     plot_one_box(xyxy, frame, label=new_label+' '+ "{:.2f}".format(new_conf), color=colors(0, True))
-                    print('Old Conf:{}  New Conf:{}'.format(conf,new_conf))
+                    # print('Old:{} with {}  New:{} with {}'.format(label,conf,new_label,new_conf))
                     print('New Confidence Score Been Updated')
                 else:
                     # plot_one_box(xyxy, frame, label=label+' '+ "{:.2f}".format(conf), color=colors(0, True))
+
                     print('False Detection')
 
             else:
                 plot_one_box(xyxy, frame, label=label+' '+ "{:.2f}".format(conf), color=colors(0, True))
 
         cv2.imshow('frame',frame)
-        # if cont == False:
-        #     print('Closing the Webcam')
-        #     cv2.destroyAllWindows()
-        #     break
 
+#############################################Press Q to quit###############################################
         if cv2.waitKey(1) & 0xFF == ord('q'):
             print('Closing the Webcam')
             cv2.destroyAllWindows()
