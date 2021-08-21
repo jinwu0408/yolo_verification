@@ -1,5 +1,5 @@
 from API2.add_task import add_task
-from API2.callget_drone_photo import setup_photo_burst_mode,take_photo_burst
+# from API2.callget_drone_photo import setup_photo_burst_mode,take_photo_burst
 
 #source ~/code/parrot-groundsdk/./products/olympe/linux/env/shell
 
