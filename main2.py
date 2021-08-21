@@ -27,18 +27,19 @@ from API2.get_size_with_id import get_size_with_id
 if __name__ == "__main__":
     print('Starting....\n')
 
-    conf_cutoff = 0.2 #for senting the drone
+    conf_cutoff = 0.6 #for senting the drone
     conf_thres=0.1 #for yolo
-    webcam_id = 0
+    webcam_id = 2
     primary_drone_id = 1 #primary_drone_id for the databasse
     secondary_drone_id = 2 #secondary_drone_id for the databasse
     clear_db(primary_drone_id) #clear the database
     clear_db(secondary_drone_id)
     print('Starting the Webcam')
     cap = cv2.VideoCapture(webcam_id)
-    # cont = True
-    while(True):
+    cont = True
+    while(cont):
         ret, frame = cap.read()
+        cv2.imshow('frame',frame)
         #Run yolo detection
         xyxy_list,label_list,conf_list = detect(frame,conf_thres)
         num_detect = len(label_list)
@@ -50,7 +51,10 @@ if __name__ == "__main__":
             conf = conf_list[i]#float
             ###############################Need to sent a drone############################3
             if conf<conf_cutoff:
-                print('Current database size: {}'.format(get_size_with_id(primary_drone_id)))
+                plot_one_box(xyxy, frame, label=label+' '+ "{:.2f}".format(conf), color=colors(0, True))
+                cv2.imshow('frame',frame)
+                cv2.waitKey(1)
+                # print('Current database size: {}'.format(get_size_with_id(primary_drone_id)))
                 save_path = 'frame_dir|primary|tmp_frame.jpg'
                 cv2.imwrite(save_path.replace('|','/'), frame)
                 upload_img(save_path,
@@ -61,7 +65,7 @@ if __name__ == "__main__":
                             xyxy[3],
                             label,
                             conf)
-                print("Database size after upload: {}".format(get_size_with_id(primary_drone_id)))
+                # print("Database size after upload: {}".format(get_size_with_id(primary_drone_id)))
                 #sent_drone
                 print("Sending the Drone")
                 collect_data(secondary_drone_id)
@@ -69,18 +73,24 @@ if __name__ == "__main__":
                 new_conf,new_label = update_conf_score(save_path,conf_thres)
 
                 if new_conf != 0 and new_conf>conf:
+                    # plot_one_box(, frame, label=label+' '+ "{:.2f}".format(conf), color=colors(0, True))
                     plot_one_box(xyxy, frame, label=new_label+' '+ "{:.2f}".format(new_conf), color=colors(0, True))
+                    cv2.imshow('frame',frame)
+                    cv2.waitKey(1)
+                    # cv2.imshow('frame',frame)
                     # print('Old:{} with {}  New:{} with {}'.format(label,conf,new_label,new_conf))
                     print('New Confidence Score Been Updated')
                 else:
                     # plot_one_box(xyxy, frame, label=label+' '+ "{:.2f}".format(conf), color=colors(0, True))
 
                     print('False Detection')
+                cont = False;
 
             else:
                 plot_one_box(xyxy, frame, label=label+' '+ "{:.2f}".format(conf), color=colors(0, True))
+                cv2.imshow('frame',frame)
+                # cv2.waitKey(1)
 
-        cv2.imshow('frame',frame)
 
 #############################################Press Q to quit###############################################
         if cv2.waitKey(1) & 0xFF == ord('q'):

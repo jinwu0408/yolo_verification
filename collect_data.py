@@ -1,4 +1,5 @@
 from API2.add_task import add_task
+import time
 # from API2.callget_drone_photo import setup_photo_burst_mode,take_photo_burst
 
 #source ~/code/parrot-groundsdk/./products/olympe/linux/env/shell
@@ -18,7 +19,7 @@ def collect_data(drone_id):
     add_task(drone_id, 'sleep', '10')
     add_task(drone_id, 'takepicture')
     add_task(drone_id, 'Landing')
-
+    time.sleep(0.5)
     return 'Fininshing Collecting the images'
     # ret_list = []
     # cap = cv2.VideoCapture(0)
